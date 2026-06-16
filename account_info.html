@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Info</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background-color: #fafafa; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; padding: 20px 16px; }
+        
+        /* हेडर */
+        .header { display: flex; align-items: center; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+        .back-btn { font-size: 28px; cursor: pointer; margin-right: 12px; text-decoration: none; color: #000; line-height: 1; }
+        
+        /* अवतार इमेज */
+        .avatar-wrap { text-align: center; margin-bottom: 30px; }
+        .avatar-circle { width: 75px; height: 75px; background: #e1e4e8; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 35px; color: #666; }
+        
+        /* इन्फो लिस्ट बॉक्स */
+        .info-row { background: #fff; border: 1px solid #f0f2f5; border-radius: 12px; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .info-val { color: #888; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <a href="me.html" class="back-btn">‹</a> Account Info
+    </div>
+
+    <div class="avatar-wrap">
+        <div class="avatar-circle">👤</div>
+    </div>
+
+    <!-- यहाँ पर भी न्यू आईडी "1" सेट है -->
+    <div class="info-row" style="cursor: default;">
+        <span>ID</span>
+        <span class="info-val" style="color:#000;">1</span>
+    </div>
+
+    <div class="info-row" style="cursor: default;">
+        <span>Phone</span>
+        <span class="info-val" style="color:#000;">7628950634</span>
+    </div>
+
+    <div class="info-row">
+        <span>Password</span>
+        <span class="info-val">****** ❯</span>
+    </div>
+
+    <div class="info-row">
+        <span>PIN</span>
+        <span class="info-val">❯</span>
+    </div>
+
+    <div class="info-row">
+        <span>Reset PIN</span>
+        <span class="info-val">❯</span>
+    </div>
+</div>
+
+</body>
+</html>

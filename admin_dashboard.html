@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Dashboard - TataPay P2P</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background-color: #f1f3f5; color: #333; padding: 20px 10px; display: flex; justify-content: center; }
+        .admin-container { width: 100%; max-width: 900px; background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        /* एडमिन हेडर */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; margin-bottom: 20px; }
+        .admin-title { font-size: 22px; font-weight: 800; color: #000; letter-spacing: -0.5px; }
+        .refresh-btn { background: #000; color: #fff; border: none; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+
+        /* स्टेट्स काउंटर कार्ड्स */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 25px; }
+        .stat-card { background: #f8f9fa; border: 1px solid #e9ecef; padding: 16px; border-radius: 12px; }
+        .stat-label { font-size: 12px; color: #666; font-weight: bold; text-transform: uppercase; }
+        .stat-value { font-size: 24px; font-weight: 900; color: #000; margin-top: 4px; }
+        .stat-value.pending { color: #f59f00; }
+
+        /* रिक्वेस्ट लिस्ट की स्टाइल */
+        .section-title { font-size: 15px; font-weight: bold; color: #495057; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .request-list { display: flex; flex-direction: column; gap: 16px; }
+        
+        /* सिंगल रिक्वेस्ट कार्ड */
+        .request-card { border: 1px solid #e9ecef; border-radius: 12px; padding: 18px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 12px; }
+        
+        @media(min-width: 600px) {
+            .request-card { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+
+        /* डिटेल्स ग्रुप */
+        .req-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+        @media(min-width: 600px) { .req-details { grid-template-columns: repeat(4, auto); gap: 25px; } }
+        
+        .info-block { display: flex; flex-direction: column; }
+        .info-label { font-size: 11px; color: #868e96; font-weight: bold; text-transform: uppercase; }
+        .info-val { font-size: 14px; font-weight: bold; color: #000; margin-top: 2px; }
+        .info-val.amt { color: #000; font-size: 16px; font-weight: 900; }
+        .info-val.utr { color: #228be6; font-family: monospace; font-size: 15px; }
+
+        /* स्क्रीनशॉट बटन स्टाइल */
+        .ss-link { color: #7048e8; text-decoration: underline; cursor: pointer; font-weight: bold; font-size: 13px; }
+
+        /* एक्शन बटन्स (Approve / Reject) */
+        .action-group { display: flex; gap: 10px; margin-top: 10px; }
+        @media(min-width: 600px) { .action-group { margin-top: 0; } }
+        
+        .btn { border: none; padding: 10px 20px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+        .btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        .btn-approve { background: #12b886; color: #fff; }
+        .btn-reject { background: #fa5252; color: #fff; }
+        .btn:active { opacity: 0.8; }
+
+        /* इमेज प्रीव्यू मोडल (पॉपअप) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { max-width: 100%; max-height: 80vh; border-radius: 8px; }
+        .close-modal { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div class="admin-title">TataPay P2P Master Panel</div>
+        <button class="refresh-btn" onclick="location.reload()">Refresh Page</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Pending Verifications</div>
+            <div class="stat-value pending" id="pending-count">3 Orders</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">System Mode</div>
+            <div class="stat-value" style="color: #12b886;">Live Active</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Pending P2P Proofs</h2>
+    <div class="request-list" id="all-requests">
+        
+        <div class="request-card" id="req-DEMO101">
+            <div class="req-details">
+                <div class="info-block"><span class="info-label">Buyer ID</span><span class="info-val">UID_77201</span></div>
+                <div class="info-block"><span class="info-label">Amount</span><span class="info-val amt">₹200.00</span></div>
+                <div class="info-block"><span class="info-label">UTR Number</span><span class="info-val utr">606318552474</span></div>
+                <div class="info-block"><span class="info-label">Screenshot</span><span class="info-val"><span class="ss-link" onclick="openSS('https://via.placeholder.com/400x700?text=Demo+Payment+Screenshot')">View Image 📸</span></span></div>
+            </div>
+            <div class="action-group">
+                <button class="btn btn-approve" onclick="processOrder('DEMO101', 'approve_order', 200, 'UID_77201')">Approve</button>
+                <button class="btn btn-reject" onclick="processOrder('DEMO101', 'reject_order')">Reject</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ssModal" class="modal">
+    <span class="close-modal" onclick="closeSS()">&times;</span>
+    <img class="modal-content" id="modalImg" src="">
+</div>
+
+<script>
+    // तुम्हारा लाइव बैकएंड लिंक यहाँ भी फिट कर दिया है भाई
+    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwRK4BuDOQA42acQdv8wwbEk0na8qRwvGq5WmVXtAAmSXRsLM1lmGP5bvQpOHFuCnSgtA/exec";
+
+    // स्क्रीनशॉट पॉपअप खोलने का लॉजिक
+    function openSS(imgUrl) {
+        document.getElementById('modalImg').src = imgUrl;
+        document.getElementById('ssModal').style.display = 'flex';
+    }
+
+    // पॉपअप बंद करने का लॉजिक
+    function closeSS() {
+        document.getElementById('ssModal').style.display = 'none';
+    }
+
+    // ऑर्डर को सचमुच गूगल शीट में APPROVE या REJECT करने का लाइव लॉजिक
+    function processOrder(requestId, adminAction, amount, buyerId) {
+        let confirmMsg = adminAction === 'approve_order' 
+            ? `क्या आप सच में इस ऑर्डर को APPROVE करना चाहते हैं?\nकन्फर्म करते ही यूजर के वॉलेट में बैलेंस प्लस हो जाएगा।`
+            : `क्या आप इस ऑर्डर को REJECT करना चाहते हैं?`;
+
+        if (!confirm(confirmMsg)) return;
+
+        // बटन को फ्रीज करना ताकि डबल क्लिक न हो
+        const card = document.getElementById('req-' + requestId);
+        const buttons = card.querySelectorAll('.btn');
+        buttons.forEach(btn => btn.disabled = true);
+
+        // बैकएंड को भेजने के लिए डेटा पैकेट
+        const dataToSend = {
+            action: adminAction,
+            requestId: requestId
+        };
+
+        // गूगल शीट को लाइव सिग्नल भेजना
+        fetch(BACKEND_URL, {
+            method: "POST",
+            mode: "no-cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataToSend)
+        })
+        .then(() => {
+            alert(adminAction === 'approve_order' ? "ऑर्डर सफलतापूर्वक Approve हो गया और बैलेंस अपडेट हो गया भाई!" : "ऑर्डर Reject कर दिया गया है।");
+            card.style.display = 'none'; // स्क्रीन से उस ऑर्डर का कार्ड हटा देना
+        })
+        .catch(error => {
+            alert("सर्वर से कनेक्ट करने में दिक्कत हुई!");
+            buttons.forEach(btn => btn.disabled = false);
+            console.error("Error:", error);
+        });
+    }
+</script>
+</body>
+</html>

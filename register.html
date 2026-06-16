@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #ffffff; display: flex; justify-content: center; min-height: 100vh; color: #333; }
+        .app-container { width: 100%; max-width: 450px; background: #ffffff; padding: 24px 20px; display: flex; flex-direction: column; position: relative; }
+        
+        .page-title { font-size: 20px; font-weight: bold; text-align: center; margin-top: 20px; margin-bottom: 60px; color: #111; }
+        
+        .form-box { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .input-wrapper { position: relative; width: 100%; }
+        
+        /* फोटो जैसा लाइट ग्रे इनपुट बॉक्स */
+        .form-input { width: 100%; background-color: #f7f7f9; border: none; padding: 18px 16px 18px 50px; border-radius: 12px; font-size: 16px; color: #000; outline: none; }
+        .form-input::placeholder { color: #b5b5be; font-weight: 500; }
+        
+        /* इनपुट बॉक्स के आइकन्स */
+        .input-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; opacity: 0.4; }
+
+        /* फोटो जैसा परफेक्ट ग्रे बटन */
+        .submit-btn { width: 100%; background-color: #8e8e93; color: #ffffff; border: none; padding: 18px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; margin-top: 40px; text-align: center; }
+        .submit-btn:active { opacity: 0.9; }
+
+        .switch-link { text-align: center; margin-top: 24px; font-size: 14px; color: #8e8e93; }
+        .switch-link a { color: #111; font-weight: bold; text-decoration: none; margin-left: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="page-title">Register</div>
+
+    <form id="register-form" class="form-box">
+        <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <input type="tel" id="phone" class="form-input" placeholder="Phone" maxlength="10" required>
+        </div>
+
+        <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input type="password" id="password" class="form-input" placeholder="Enter Password" minlength="6" required>
+        </div>
+
+        <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input type="password" id="re-password" class="form-input" placeholder="Repeat Password" minlength="6" required>
+        </div>
+
+        <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <input type="text" id="invite" class="form-input" placeholder="0eahoyopbkbe" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Register</button>
+    </form>
+
+    <div class="switch-link">
+        Already have an account?<a href="login.html">LOG IN</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if(document.getElementById('password').value !== document.getElementById('re-password').value) {
+            alert("पासवर्ड मैच नहीं हुआ भाई!");
+            return;
+        }
+        
+        // रजिस्ट्रेशन सफल होने पर सीधा लॉगिन पेज पर भेजें
+        alert("Registration Successful!");
+        window.location.href = "login.html";
+    });
+</script>
+</body>
+</html>

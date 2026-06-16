@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - R Pay</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f9fc; margin: 0; padding: 0; padding-bottom: 80px; color: #333; }
+        .app-container { max-width: 450px; margin: 0 auto; background-color: #fff; min-height: 100vh; box-shadow: 0 0 10px rgba(0,0,0,0.05); position: relative; }
+        
+        .header { padding: 20px; font-size: 24px; font-weight: bold; color: #000; background: #fff; }
+
+        /* ऑटोमैटिक बैनर स्लाइडर स्टाइल */
+        .slider-container { padding: 0 15px; margin-bottom: 15px; position: relative; overflow: hidden; height: 140px; }
+        .slider-wrapper { display: flex; width: 200%; height: 100%; transition: transform 0.5s ease-in-out; }
+        .slide { width: 50%; height: 100%; border-radius: 12px; cursor: pointer; background-position: center; background-repeat: no-repeat; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* यहाँ तेरी फोटो लोड होगी */
+        .slide-1 { background-image: url('11454.png'); background-size: 100% 100%; position: relative; }
+        .slide-2 { background-image: url('11455.png'); background-size: 100% 100%; position: relative; }
+        
+        /* डॉट्स इंडिकेटर */
+        .dots-container { display: flex; justify-content: center; gap: 6px; margin-top: -8px; margin-bottom: 15px; }
+        .dot { width: 6px; height: 6px; background: #ccc; border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: #000; width: 15px; border-radius: 10px; }
+
+        /* कमीशन रूल्स पॉप-अप स्टाइल */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 380px; border-radius: 16px; padding: 20px; box-sizing: border-box; text-align: center; position: relative; animation: popUp 0.3s ease; }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a; }
+        .rule-row { display: flex; justify-content: space-between; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 14px; border-left: 4px solid #7000ff; }
+        .rule-label { font-weight: bold; color: #333; }
+        .rule-val { font-weight: bold; color: #ff007c; }
+        .close-btn { width: 100%; background: #000; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+
+        /* बाकी पुराना लेआउट स्टाइल */
+        .ratio-container { display: flex; justify-content: space-between; padding: 0 15px; margin-bottom: 15px; }
+        .ratio-box { width: 48%; background: #f8f9fa; padding: 15px; border-radius: 12px; box-sizing: border-box; }
+        .ratio-label { font-size: 13px; color: #666; font-weight: bold; margin-bottom: 8px; }
+        .ratio-main { font-size: 18px; font-weight: bold; color: #000; }
+        .ratio-sub { font-size: 11px; color: #999; margin-top: 4px; }
+        .topup-container { padding: 0 15px; margin-bottom: 15px; }
+        .topup-btn { width: 100%; background: #000; color: #fff; border: none; padding: 16px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; position: relative; display: flex; justify-content: center; align-items: center; text-decoration: none; }
+        .topup-badge { position: absolute; right: 0; top: 0; background: linear-gradient(45deg, #448aff, #00e5ff); color: #fff; font-size: 10px; padding: 4px 10px; border-top-right-radius: 12px; border-bottom-left-radius: 12px; font-weight: bold; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; margin-bottom: 25px; }
+        .balance-card { background: #fff; border: 1px solid #f1f3f5; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .balance-info { display: flex; flex-direction: column; }
+        .balance-title { font-size: 13px; color: #999; margin-bottom: 5px; font-weight: 500; }
+        .balance-val { font-size: 16px; font-weight: bold; color: #000; }
+        .arrow { color: #ccc; font-size: 16px; font-weight: bold; }
+        .tutorial-section { padding: 0 15px; margin-bottom: 20px; }
+        .tutorial-heading { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #000; }
+        .tutorial-card { background: #fff; border: 1px solid #f1f3f5; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .tut-left { display: flex; flex-direction: column; }
+        .tut-title { font-size: 14px; font-weight: bold; color: #000; margin-bottom: 25px; }
+        .tut-link { color: #666; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .tut-img { width: 80px; height: 50px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff; text-align: center; }
+        
+        /* बॉटम नेविगेशन बार को पूरी तरह से सुधारा भाई */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-sizing: border-box; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #999; font-size: 11px; font-weight: bold; cursor: pointer; width: 20%; text-align: center; }
+        .nav-item.active { color: #000; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; height: 22px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">R Pay</div>
+
+    <div class="slider-container">
+        <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slide slide-1" onclick="openInviteRules()"></div>
+            <div class="slide slide-2" onclick="alert('Opening Newbie Profit Guide...')"></div>
+        </div>
+    </div>
+
+    <div class="dots-container">
+        <div class="dot active" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+    </div>
+
+    <div id="inviteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Invitation Commission Rules</div>
+            <div class="rule-row">
+                <span class="rule-label">Level 1 (Direct Referral)</span>
+                <span class="rule-val">4% Commission</span>
+            </div>
+            <div class="rule-row">
+                <span class="rule-label">Level 2 (Team Referral)</span>
+                <span class="rule-val">2% Commission</span>
+            </div>
+            <p style="font-size: 12px; color: #666; text-align: left; margin-top: 15px; line-height: 1.4;">
+                * Example: If you invite Member A, you get 4%. If Member A invites Member B, Member A gets 4% and you get an extra 2%.
+            </p>
+            <button class="close-btn" onclick="closeInviteRules()">Close</button>
+        </div>
+    </div>
+
+    <div class="ratio-container">
+        <div class="ratio-box">
+            <div class="ratio-label">USDT Ratio</div>
+            <div class="ratio-main">1 USDT ≈ 106.08 INR</div>
+            <div class="ratio-sub">Bonus ratio: 2%</div>
+        </div>
+        <div class="ratio-box">
+            <div class="ratio-label">INR Bonus Ratio</div>
+            <div class="ratio-main" style="font-size: 26px; padding-top: 2px;">4%</div>
+        </div>
+    </div>
+
+    <div class="topup-container">
+        <button class="topup-btn" onclick="window.location.href='deposit.html'">
+            Top up
+            <div class="topup-badge">✦ First</div>
+        </button>
+    </div>
+
+    <div class="balance-grid">
+        <div class="balance-card">
+            <div class="balance-info">
+                <span class="balance-title">Balance</span>
+                <span class="balance-val">0.00</span>
+            </div>
+            <span class="arrow">&gt;</span>
+        </div>
+        <div class="balance-card">
+            <div class="balance-info">
+                <span class="balance-title">Today Received</span>
+                <span class="balance-val">0.00</span>
+            </div>
+            <span class="arrow">&gt;</span>
+        </div>
+        <div class="balance-card">
+            <div class="balance-info">
+                <span class="balance-title">Top up Bonus</span>
+                <span class="balance-val">0.00</span>
+            </div>
+            <span class="arrow">&gt;</span>
+        </div>
+        <div class="balance-card">
+            <div class="balance-info">
+                <span class="balance-title">Team Commission</span>
+                <span class="balance-val">0.00</span>
+            </div>
+            <span class="arrow">&gt;</span>
+        </div>
+    </div>
+
+    <div class="tutorial-section">
+        <div class="tutorial-heading">Tutorial</div>
+        <div class="tutorial-card">
+            <div class="tut-left">
+                <span class="tut-title">How to link to FreeCharge?</span>
+                <a href="#" class="tut-link">Watch video &gt;</a>
+            </div>
+            <div class="tut-img" style="background: #f15a22;">FreeCharge</div>
+        </div>
+        <div class="tutorial-card">
+            <div class="tut-left">
+                <span class="tut-title">How to link to Indus?</span>
+                <a href="#" class="tut-link">Watch video &gt;</a>
+            </div>
+            <div class="tut-img" style="background: #6b1d2f;">IndusInd</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <span>Home</span>
+        </a>
+        <a href="deposit.html" class="nav-item">
+            <div class="nav-icon">💳</div>
+            <span>Deposit</span>
+        </a>
+        <a href="add-account.html" class="nav-item">
+            <div class="nav-icon">💼</div>
+            <span>UPI</span>
+        </a>
+        <a href="team.html" class="nav-item">
+            <div class="nav-icon">📊</div>
+            <span>Team</span>
+        </a>
+        <a href="me.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <span>Me</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const wrapper = document.getElementById('sliderWrapper');
+    const dot1 = document.getElementById('dot1');
+    const dot2 = document.getElementById('dot2');
+
+    setInterval(() => {
+        if (currentSlide === 0) {
+            wrapper.style.transform = 'translateX(-50%)';
+            dot1.classList.remove('active');
+            dot2.classList.add('active');
+            currentSlide = 1;
+        } else {
+            wrapper.style.transform = 'translateX(0%)';
+            dot2.classList.remove('active');
+            dot1.classList.add('active');
+            currentSlide = 0;
+        }
+    }, 3000);
+
+    // पॉप-अप लॉजिक
+    function openInviteRules() {
+        document.getElementById('inviteModal').style.display = 'flex';
+    }
+    function closeInviteRules() {
+        document.getElementById('inviteModal').style.display = 'none';
+    }
+</script>
+</body>
+</html>

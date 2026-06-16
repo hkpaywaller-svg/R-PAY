@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bind Bank Account - TataPay</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background-color: #fafafa; display: flex; justify-content: center; color: #000; }
+        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; padding: 16px; padding-bottom: 40px; }
+        
+        /* हेडर */
+        .header { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 24px; border-bottom: 1px solid #f1f3f5; padding-bottom: 12px; }
+        .back-btn { font-size: 28px; cursor: pointer; text-decoration: none; color: #000; line-height: 1; }
+        .title { flex-grow: 1; text-align: center; margin-right: 20px; }
+
+        /* बैनर */
+        .info-banner { background: #fff9db; color: #f59f00; border-radius: 8px; padding: 12px; margin-bottom: 24px; font-size: 12px; font-weight: bold; line-height: 1.4; }
+
+        /* फॉर्म इनपुट */
+        .input-group { margin-bottom: 20px; }
+        .input-label { font-size: 14px; font-weight: bold; color: #000; margin-bottom: 8px; display: block; }
+        .bank-input { width: 100%; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; font-size: 15px; font-weight: bold; outline: none; }
+        .bank-input::placeholder { font-weight: normal; color: #adb5bd; }
+
+        /* सबमिट बटन */
+        .submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 16px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .submit-btn:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- हेडर -->
+    <div class="header">
+        <a href="me.html" class="back-btn">‹</a>
+        <span class="title">Bind Bank Account</span>
+    </div>
+
+    <div class="info-banner">
+        ⚠️ कृपया अपनी बैंक डिटेल्स बिल्कुल सही भरें भाई। इसी अकाउंट में आपका ऑटोमैटिक सेलिंग का पैसा ट्रांसफर किया जाएगा।
+    </div>
+
+    <!-- बैंक बाइंड फॉर्म -->
+    <form id="bank-form">
+        <div class="input-group">
+            <label class="input-label">Account Holder Name</label>
+            <input type="text" id="bank-name" class="bank-input" placeholder="Enter full name" required>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Account Number</label>
+            <input type="number" id="bank-acc" class="bank-input" placeholder="Enter account number" required>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">IFSC Code</label>
+            <input type="text" id="bank-ifsc" class="bank-input" placeholder="e.g. SBIN0001234" style="text-transform: uppercase;" required>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Bank Name / Branch</label>
+            <input type="text" id="bank-branch" class="bank-input" placeholder="e.g. State Bank of India" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Save Bank Details</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('bank-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('bank-name').value;
+        const acc = document.getElementById('bank-acc').value;
+        const ifsc = document.getElementById('bank-ifsc').value.toUpperCase();
+        const branch = document.getElementById('bank-branch').value;
+
+        // डेटा को गूगल शीट में स्टोर करने का लॉजिक ताकि जब कोई ऑर्डर खरीदे तो ये डिटेल्स वहाँ दिखें
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzG6pL8Z8vWR6V7Wmx6v3YJ2_XU4wz2Vb-w7A1lP_m9-p8bXpWc6uI9rN6pE-W-mZ-A/exec';
+
+        const formData = new FormData();
+        formData.append('action', 'bindBank');
+        formData.append('buyerId', 'BUYER_77201'); // करंट यूज़र की आईडी
+        formData.append('holderName', name);
+        formData.append('accountNumber', acc);
+        formData.append('ifsc', ifsc);
+        formData.append('bankName', branch);
+
+        alert("आपकी बैंक डिटेल्स लिंक की जा रही हैं...");
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+            alert("बैंक अकाउंट सफलतापूर्वक लिंक हो गया भाई! अब आपका ऑटोमैटिक सिस्टम चालू है।");
+            window.location.href = "me.html";
+        })
+        .catch(error => {
+            alert("डिटेल्स सेव करने में कोई दिक्कत आई भाई!");
+        });
+    });
+</script>
+</body>
+</html>

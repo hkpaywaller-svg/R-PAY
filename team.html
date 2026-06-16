@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team - R Pay</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f9fc; margin: 0; padding: 0; padding-bottom: 80px; color: #333; }
+        .app-container { max-width: 450px; margin: 0 auto; background-color: #fff; min-height: 100vh; box-shadow: 0 0 10px rgba(0,0,0,0.05); position: relative; padding: 20px; box-sizing: border-box; }
+        
+        h2 { font-size: 22px; font-weight: bold; color: #000; margin-top: 10px; margin-bottom: 15px; }
+        h3 { font-size: 18px; font-weight: bold; color: #000; margin-top: 25px; margin-bottom: 15px; }
+
+        /* मुख्य डार्क कार्ड स्टाइल */
+        .stats-card { background-color: #404040; color: #fff; border-radius: 12px; padding: 25px 20px; margin-bottom: 25px; position: relative; }
+        .stats-grid { display: flex; justify-content: space-between; margin-bottom: 25px; }
+        .stat-box { width: 48%; }
+        .stat-value { font-size: 26px; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 13px; color: #ccc; font-weight: 500; }
+        .member-count { display: flex; align-items: center; gap: 5px; font-size: 16px; font-weight: bold; color: #fff; }
+        .member-icon { font-size: 18px; }
+
+        /* इनवाइट कोड बॉक्स */
+        .invite-box { background-color: #f8f9fa; border: 1px solid #f1f3f5; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .invite-link { font-size: 13px; font-weight: bold; color: #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 85%; }
+        .copy-btn { background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
+        .copy-icon { width: 20px; height: 20px; fill: #666; }
+
+        /* टीम लिस्ट आइटम स्टाइल */
+        .team-list { margin-top: 10px; }
+        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f8f9fa; }
+        .member-left { display: flex; align-items: center; gap: 12px; }
+        
+        .avatar { width: 44px; height: 44px; border-radius: 50%; background: #004d4d; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        
+        .member-info { display: flex; flex-direction: column; gap: 4px; }
+        .phone-text { font-size: 14px; font-weight: bold; color: #000; }
+        .recharge-text { font-size: 12px; color: #999; font-weight: 500; }
+        
+        .member-right { display: flex; align-items: center; gap: 8px; }
+        .member-stats { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+        .sub-count { font-size: 13px; color: #999; font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 3px; }
+        .comm-text { font-size: 12px; color: #999; font-weight: 500; }
+        .arrow-right { color: #ccc; font-size: 16px; font-weight: bold; }
+
+        /* सुधरा हुआ बॉटम नेविगेशन बार */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-sizing: border-box; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #999; font-size: 11px; font-weight: bold; cursor: pointer; width: 20%; text-align: center; }
+        .nav-item.active { color: #000; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; height: 22px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <h2>Team</h2>
+
+    <div class="stats-card">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="totalComm">0.00</div>
+                <div class="stat-label">Commission</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="teamRecharge">0.00</div>
+                <div class="stat-label">Team Recharge</div>
+            </div>
+        </div>
+        <div class="member-count">
+            <span class="member-icon">👤</span> <span id="memberTotal">0</span>
+        </div>
+    </div>
+
+    <h3>Invite Code</h3>
+    <div class="invite-box">
+        <span class="invite-link" id="inviteLink">https://rpay-web.com/regist?code=0dashowpay8j</span>
+        <button class="copy-btn" onclick="copyLink()">
+            <svg class="copy-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+    </div>
+
+    <h3>Team Detail</h3>
+    <div class="team-list">
+        <div class="member-item">
+            <div class="member-left">
+                <div class="avatar"><img src="https://www.transparenttextures.com/patterns/dark-matter.png" alt="av"></div>
+                <div class="member-info">
+                    <span class="phone-text">Phone: 705****7069</span>
+                    <span class="recharge-text">Recharge: 0</span>
+                </div>
+            </div>
+            <div class="member-right">
+                <div class="member-stats">
+                    <span class="sub-count">👤 1</span>
+                    <span class="comm-text">Comm: 0</span>
+                </div>
+                <span class="arrow-right">❯</span>
+            </div>
+        </div>
+        </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon">🏠</div><span>Home</span>
+        </a>
+        <a href="deposit.html" class="nav-item">
+            <div class="nav-icon">💳</div><span>Deposit</span>
+        </a>
+        <a href="add-account.html" class="nav-item">
+            <div class="nav-icon">💼</div><span>UPI</span>
+        </a>
+        <a href="team.html" class="nav-item active">
+            <div class="nav-icon">📊</div><span>Team</span>
+        </a>
+        <a href="me.html" class="nav-item">
+            <div class="nav-icon">👤</div><span>Me</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    function copyLink() {
+        const linkText = document.getElementById('inviteLink').innerText;
+        navigator.clipboard.writeText(linkText);
+        alert('Invitation Link Copied!');
+    }
+</script>
+</body>
+</html>

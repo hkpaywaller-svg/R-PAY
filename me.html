@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Me - Profile</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f7f9fc; color: #000; display: flex; justify-content: center; padding-bottom: 80px; }
+        
+        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; position: relative; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        
+        .profile-section { padding: 20px 16px 10px; }
+        .edit-profile-btn { display: flex; align-items: center; gap: 4px; font-size: 18px; font-weight: bold; cursor: pointer; color: #000; }
+        .edit-profile-btn span { font-size: 12px; color: #666; }
+        .user-id { font-size: 14px; color: #000; font-weight: 500; margin-top: 6px; margin-bottom: 20px; }
+        
+        .quota-label { font-size: 13px; color: #555; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+        .quota-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .balance-amount { font-size: 32px; font-weight: 800; color: #000; }
+        .balance-amount span { font-size: 14px; font-weight: bold; margin-left: 3px; }
+        
+        .topup-btn { background: #000; color: #fff; border: none; padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .reward-text { font-size: 13px; color: #999; margin-top: 4px; margin-bottom: 20px; font-weight: 500; }
+
+        .invitation-banner { margin: 0 16px 20px; background: linear-gradient(135deg, #1f003a 0%, #3d0066 50%, #5c0099 100%); color: #fff; border-radius: 12px; padding: 18px 15px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(61,0,102,0.15); border: 1px solid rgba(255,215,0,0.2); }
+        .banner-title { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .banner-title span { color: #ffd700; }
+        .banner-sub { font-size: 11px; color: #ffeb3b; font-weight: bold; margin: 4px 0 8px; letter-spacing: 1px; }
+        .banner-desc { font-size: 9px; color: #e0ccff; font-weight: 500; }
+
+        .menu-list { padding: 0 16px; }
+        .menu-item { background: #fff; border: 1px solid #f2f4f7; border-radius: 12px; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.01); text-decoration: none; color: #000; }
+        .menu-item-left { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: bold; }
+        .menu-item-icon { font-size: 18px; }
+        .menu-item-arrow { color: #ccc; font-size: 15px; font-weight: bold; }
+
+        .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+        .bottom-sheet { position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-radius: 20px 20px 0 0; padding: 24px 20px; z-index: 1001; transition: bottom 0.3s ease-out; }
+        .sheet-title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #000; }
+        
+        .contact-grid { display: flex; justify-content: space-between; gap: 15px; }
+        .contact-box { flex: 1; border: 1px solid #f0f0f0; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; text-decoration: none; color: #000; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; font-size: 14px; }
+        .contact-box img { width: 45px; height: 45px; object-fit: contain; }
+
+        .lang-option { padding: 15px 10px; font-size: 15px; font-weight: bold; border-bottom: 1px solid #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; }
+
+        /* सुधरा हुआ बॉटम नेविगेशन बार */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; z-index: 500; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #999; font-size: 11px; font-weight: bold; cursor: pointer; width: 20%; text-align: center; }
+        .nav-item.active { color: #000; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; height: 22px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <div class="profile-section">
+        <div class="edit-profile-btn" onclick="window.location.href='account_info.html'">
+            Edit profile <span>▼</span>
+        </div>
+        <div class="user-id">ID: 1</div>
+
+        <div class="quota-label">⚙️ Quota</div>
+        <div class="quota-row">
+            <div class="balance-amount">0.00<span>INR</span></div>
+            <a href="deposit.html" class="topup-btn">Top up</a>
+        </div>
+        <div class="reward-text">Reward ratio 2%</div>
+    </div>
+
+    <div class="invitation-banner">
+        <div class="banner-title">INVITATION <span>REWARDS</span></div>
+        <div class="banner-sub">★ Invite More • Earn More ★</div>
+        <div class="banner-desc">Claim available during the event and within 3 days after it ends.</div>
+    </div>
+
+    <div class="menu-list">
+        <a href="recharge_history.html" class="menu-item">
+            <div class="menu-item-left"><span class="menu-item-icon">⏳</span> Recharge History</div>
+            <div class="menu-item-arrow">❯</div>
+        </a>
+        <a href="token_history.html" class="menu-item">
+            <div class="menu-item-left"><span class="menu-item-icon">📋</span> Token History</div>
+            <div class="menu-item-arrow">❯</div>
+        </a>
+        <div class="menu-item" onclick="openSheet('langSheet')">
+            <div class="menu-item-left"><span class="menu-item-icon">🌐</span> Languages</div>
+            <div class="menu-item-arrow" id="currentLang" style="color:#999; font-size:14px; font-weight:normal;">English ❯</div>
+        </div>
+        <div class="menu-item" onclick="openSheet('googleAuthSheet')">
+            <div class="menu-item-left"><span class="menu-item-icon">🛡️</span> Google Authentication</div>
+            <div class="menu-item-arrow">❯</div>
+        </div>
+        <div class="menu-item" onclick="openSheet('contactSheet')">
+            <div class="menu-item-left"><span class="menu-item-icon">💬</span> Contact Us</div>
+            <div class="menu-item-arrow">❯</div>
+        </div>
+        <a href="login.html" class="menu-item" style="margin-top: 20px; border-color: #ffe5e5;">
+            <div class="menu-item-left" style="color: #ff3b30;"><span class="menu-item-icon">🚪</span> Sign Out</div>
+            <div class="menu-item-arrow" style="color: #ff3b30;">❯</div>
+        </a>
+    </div>
+
+    <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
+
+    <div class="bottom-sheet" id="contactSheet">
+        <div class="sheet-title">Contact Us</div>
+        <div class="contact-grid">
+            <a href="https://t.me/your_telegram" target="_blank" class="contact-box">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+                <div>Telegram</div>
+            </a>
+            <a href="https://wa.me/your_number" target="_blank" class="contact-box">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Whatsapp">
+                <div>Whatsapp</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="bottom-sheet" id="langSheet">
+        <div class="sheet-title">Select Language</div>
+        <div class="lang-option" onclick="selectLanguage('English')"><span>English</span><span style="color:#0ca678;">✓</span></div>
+        <div class="lang-option" onclick="selectLanguage('Hindi')"><span>Hindi (हिंदी)</span><span></span></div>
+    </div>
+
+    <div class="bottom-sheet" id="googleAuthSheet">
+        <div class="sheet-title">Google Authentication</div>
+        <p style="text-align:center; font-size:14px; color:#666; margin-bottom:20px;">Link your Google Authenticator for enhanced security.</p>
+        <button onclick="closeAllSheets()" style="width:100%; background:#000; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Close</button>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon">🏠</div><span>Home</span>
+        </a>
+        <a href="deposit.html" class="nav-item">
+            <div class="nav-icon">💳</div><span>Deposit</span>
+        </a>
+        <a href="add-account.html" class="nav-item">
+            <div class="nav-icon">💼</div><span>UPI</span>
+        </a>
+        <a href="team.html" class="nav-item">
+            <div class="nav-icon">📊</div><span>Team</span>
+        </a>
+        <a href="me.html" class="nav-item active">
+            <div class="nav-icon">👤</div><span>Me</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    function openSheet(sheetId) {
+        document.getElementById('overlay').style.display = 'block';
+        setTimeout(() => { document.getElementById(sheetId).style.bottom = '0'; }, 50);
+    }
+    function closeAllSheets() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('contactSheet').style.bottom = '-100%';
+        document.getElementById('langSheet').style.bottom = '-100%';
+        document.getElementById('googleAuthSheet').style.bottom = '-100%';
+    }
+    function selectLanguage(lang) {
+        document.getElementById('currentLang').innerText = lang + ' ❯';
+        closeAllSheets();
+    }
+</script>
+</body>
+</html>

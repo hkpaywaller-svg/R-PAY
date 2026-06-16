@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details - TataPay</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background-color: #fafafa; display: flex; justify-content: center; color: #333; }
+        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; padding: 20px 16px; padding-bottom: 40px; }
+        
+        /* नया टाइमर बॉक्स */
+        .timer-box { text-align: center; padding: 15px; background: #fff3cd; font-weight: bold; border-radius: 8px; margin-bottom: 20px; color: #856404; font-size: 18px; border: 1px solid #ffeeba; }
+        
+        /* बाकी स्टाइल वैसे ही रहेगी */
+        .header { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 24px; border-bottom: 1px solid #f1f3f5; padding-bottom: 12px; }
+        .back-btn { font-size: 28px; cursor: pointer; text-decoration: none; color: #000; line-height: 1; }
+        .title { flex-grow: 1; text-align: center; margin-right: 20px; }
+        .amt-box { text-align: center; margin-bottom: 24px; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px dashed #ced4da; }
+        .amt-label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 4px; }
+        .amt-value { font-size: 32px; font-weight: 900; color: #000; }
+        .bank-card { border: 1px solid #000; border-radius: 12px; padding: 18px; margin-bottom: 24px; background: #fff; display: flex; flex-direction: column; gap: 14px; }
+        .bank-row { display: flex; justify-content: space-between; align-items: center; }
+        .bank-label { font-size: 13px; color: #666; font-weight: 500; }
+        .bank-value { font-size: 14px; font-weight: bold; color: #000; text-align: right; }
+        .copy-inline-btn { background: #000; color: #fff; border: none; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-left: 8px; }
+        .input-group { margin-bottom: 20px; }
+        .input-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; display: block; }
+        .text-input { width: 100%; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; font-size: 15px; outline: none; font-weight: bold; }
+        .file-input { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; background: #f8f9fa; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 16px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .cancel-btn { width: 100%; background: #ff4d4f; color: #fff; border: none; padding: 16px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="timer-box">Order expires in: <span id="timer">30:00</span></div>
+
+    <div class="header">
+        <div onclick="cancelOrder()" class="back-btn" style="cursor:pointer;">‹</div>
+        <span class="title">Transfer Details</span>
+    </div>
+
+    <div class="amt-box">
+        <div class="amt-label">Deposit Amount</div>
+        <div class="amt-value" id="display-amount">₹200.00</div>
+    </div>
+
+    <div class="bank-card">
+        <div class="bank-row">
+            <span class="bank-label">Bank Name</span>
+            <span class="bank-value">FINO PAYMENTS BANK</span>
+        </div>
+        <div class="bank-row">
+            <span class="bank-label">Account Holder</span>
+            <span class="bank-value">Noor Bhanu Begum</span>
+        </div>
+        <div class="bank-row">
+            <span class="bank-label">Account Number</span>
+            <span class="bank-value">20401036509 <button class="copy-inline-btn" onclick="copyText('20401036509')">Copy</button></span>
+        </div>
+        <div class="bank-row">
+            <span class="bank-label">IFSC Code</span>
+            <span class="bank-value">FINO0009001 <button class="copy-inline-btn" onclick="copyText('FINO0009001')">Copy</button></span>
+        </div>
+    </div>
+
+    <form id="payment-form">
+        <div class="input-group">
+            <label class="input-label">Enter 12-Digit UTR / Transaction ID</label>
+            <input type="text" id="utr-number" class="text-input" placeholder="e.g. 3254XXXXXXXX" maxlength="12" required>
+        </div>
+        <div class="input-group">
+            <label class="input-label">Upload Payment Screenshot Proof</label>
+            <input type="file" id="screenshot-file" class="file-input" accept="image/*" required>
+        </div>
+        <button type="submit" class="submit-btn">I Have Paid (Submit Proof)</button>
+        <button type="button" class="cancel-btn" onclick="cancelOrder()">Cancel Order</button>
+    </form>
+</div>
+
+<script>
+    // 1. टाइमर और अमाउंट लॉजिक
+    let timeLeft = 1800; // 30 minutes
+    const timerDisplay = document.getElementById('timer');
+
+    const timerInterval = setInterval(() => {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Order Time Out! Redirecting to deposit.");
+            window.location.href = "deposit.html";
+        }
+        timeLeft--;
+    }, 1000);
+
+    // 2. कैंसिल फंक्शन
+    function cancelOrder() {
+        if(confirm("Are you sure you want to cancel this order?")) {
+            window.location.href = "deposit.html";
+        }
+    }
+
+    // 3. बाकि सब कोड वैसे ही है...
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amt');
+        if(amount) document.getElementById('display-amount').innerText = "₹" + parseFloat(amount).toLocaleString('en-IN') + ".00";
+    });
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+        alert("Copied successfully!");
+    }
+    
+    // सबमिट लॉजिक...
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert("Processing your payment...");
+        window.location.href = "deposit.html";
+    });
+</script>
+</body>
+</html>
