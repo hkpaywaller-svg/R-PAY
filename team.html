@@ -13,91 +13,70 @@
         .stat-value { font-size: 24px; font-weight: bold; }
         .stat-label { font-size: 13px; color: #ccc; margin-top: 5px; }
         .member-count { font-size: 16px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
-        
         .invite-box { background-color: #f8f9fa; border: 1px solid #f1f3f5; border-radius: 12px; padding: 15px; display: none; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .invite-link { font-size: 13px; font-weight: bold; color: #000; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 80%; }
         .copy-btn { background: none; border: none; cursor: pointer; font-size: 18px; }
-
         .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f8f9fa; }
         .member-left { display: flex; align-items: center; gap: 12px; }
         .avatar { width: 44px; height: 44px; border-radius: 50%; background: #004d4d; }
         .member-info { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: bold; }
         .recharge-text { font-size: 12px; color: #999; font-weight: 500; }
         .member-right { text-align: right; font-size: 13px; color: #999; font-weight: bold; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #999; font-weight: bold; }
-        .nav-item.active { color: #000; }
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <h2>Team</h2>
-
     <div class="stats-card">
         <div class="stats-grid">
-            <div><div class="stat-value" id="totalComm">0.00</div><div class="stat-label">Commission</div></div>
-            <div><div class="stat-value" id="teamRecharge">0.00</div><div class="stat-label">Team Recharge</div></div>
+            <div><div class="stat-value">0.00</div><div class="stat-label">Commission</div></div>
+            <div><div class="stat-value">0.00</div><div class="stat-label">Team Recharge</div></div>
         </div>
         <div class="member-count" id="memberCount">👤 0</div>
     </div>
-
     <h3 id="inviteHeader">Invite Code</h3>
     <div class="invite-box" id="inviteBox">
         <span class="invite-link" id="inviteLink">...</span>
         <button class="copy-btn" onclick="copyLink()">📋</button>
     </div>
-
     <h3>Team Detail</h3>
     <div id="teamList"></div>
-
-    <div class="bottom-nav">
-        <div class="nav-item">🏠 Home</div><div class="nav-item">💳 Deposit</div><div class="nav-item">💼 UPI</div><div class="nav-item active">📊 Team</div><div class="nav-item">👤 Me</div>
-    </div>
 </div>
-
 <script>
-    // 1. TL स्टेटस और यूनिक कोड सेट करो
+    // इनवाइट कोड लोड करने के लिए
     fetch('/api/get-team-data')
     .then(res => res.json())
     .then(data => {
         if (data.canInvite) {
             document.getElementById('inviteBox').style.display = 'flex';
-            // यह लाइन अब ऑटोमैटिकली सही URL उठाएगी
-            const dynamicLink = window.location.origin + "/register.html?code=" + data.referralCode;
-            document.getElementById('inviteLink').innerText = dynamicLink;
-        } else {
-            document.getElementById('inviteHeader').style.display = 'none';
+            document.getElementById('inviteLink').innerText = window.location.origin + "/register.html?code=" + data.referralCode;
         }
     });
 
-    // 2. टीम मेंबर्स की लिस्ट लोड करो
+    // टीम मेंबर्स और उनकी ID लोड करने के लिए
     fetch('/api/get-team-members')
     .then(res => res.json())
     .then(members => {
         const teamList = document.getElementById('teamList');
         document.getElementById('memberCount').innerText = "👤 " + members.length;
         
-        teamList.innerHTML = ''; 
-        members.forEach(member => {
-            teamList.innerHTML += `
-                <div class="member-item">
-                    <div class="member-left">
-                        <div class="avatar"></div>
-                        <div class="member-info">Phone: ${member.mobile}<br><span class="recharge-text">Recharge: 0</span></div>
+        teamList.innerHTML = members.map(m => `
+            <div class="member-item">
+                <div class="member-left">
+                    <div class="avatar"></div>
+                    <div class="member-info">
+                        Phone: ${m.mobile}
+                        <br><span class="recharge-text">ID: ${m.id}</span>
                     </div>
-                    <div class="member-right">Joined<br>Comm: 0 ❯</div>
                 </div>
-            `;
-        });
+                <div class="member-right">Joined<br>Comm: 0 ❯</div>
+            </div>
+        `).join('');
     });
 
     function copyLink() {
-        const linkText = document.getElementById('inviteLink').innerText;
-        navigator.clipboard.writeText(linkText).then(() => {
-            alert('Link Copied!');
-        });
+        navigator.clipboard.writeText(document.getElementById('inviteLink').innerText)
+        .then(() => alert('Link Copied!'));
     }
 </script>
 </body>

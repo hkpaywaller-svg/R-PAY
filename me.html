@@ -158,13 +158,18 @@
 </div>
 
 <script>
-    // सर्वर से आईडी लाने वाला फंक्शन
+    // फिक्स्ड स्क्रिप्ट: यह आईडी लोड करेगा और Loading हटा देगा
     fetch('/api/get-profile')
     .then(res => res.json())
     .then(data => {
         if(data && data.id) {
             document.getElementById('userIdDisplay').innerText = "ID: " + data.id;
+        } else {
+            document.getElementById('userIdDisplay').innerText = "ID: N/A";
         }
+    })
+    .catch(() => {
+        document.getElementById('userIdDisplay').innerText = "ID: Error";
     });
 
     function openSheet(sheetId) {
