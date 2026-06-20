@@ -8,11 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
         body { background-color: #fafafa; display: flex; justify-content: center; color: #333; }
         .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; padding: 20px 16px; padding-bottom: 40px; }
-        
-        /* नया टाइमर बॉक्स */
         .timer-box { text-align: center; padding: 15px; background: #fff3cd; font-weight: bold; border-radius: 8px; margin-bottom: 20px; color: #856404; font-size: 18px; border: 1px solid #ffeeba; }
-        
-        /* बाकी स्टाइल वैसे ही रहेगी */
         .header { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 24px; border-bottom: 1px solid #f1f3f5; padding-bottom: 12px; }
         .back-btn { font-size: 28px; cursor: pointer; text-decoration: none; color: #000; line-height: 1; }
         .title { flex-grow: 1; text-align: center; margin-right: 20px; }
@@ -36,17 +32,14 @@
 
 <div class="app-container">
     <div class="timer-box">Order expires in: <span id="timer">30:00</span></div>
-
     <div class="header">
         <div onclick="cancelOrder()" class="back-btn" style="cursor:pointer;">‹</div>
         <span class="title">Transfer Details</span>
     </div>
-
     <div class="amt-box">
         <div class="amt-label">Deposit Amount</div>
         <div class="amt-value" id="display-amount">₹200.00</div>
     </div>
-
     <div class="bank-card">
         <div class="bank-row">
             <span class="bank-label">Bank Name</span>
@@ -81,47 +74,50 @@
 </div>
 
 <script>
-    // 1. टाइमर और अमाउंट लॉजिक
-    let timeLeft = 1800; // 30 minutes
+    let timeLeft = 1800;
     const timerDisplay = document.getElementById('timer');
-
-    const timerInterval = setInterval(() => {
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            alert("Order Time Out! Redirecting to deposit.");
-            window.location.href = "deposit.html";
-        }
-        timeLeft--;
+    setInterval(() => {
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        timerDisplay.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if (timeLeft > 0) timeLeft--;
     }, 1000);
 
-    // 2. कैंसिल फंक्शन
-    function cancelOrder() {
-        if(confirm("Are you sure you want to cancel this order?")) {
-            window.location.href = "deposit.html";
-        }
-    }
+    function cancelOrder() { if(confirm("Cancel order?")) window.location.href = "deposit.html"; }
 
-    // 3. बाकि सब कोड वैसे ही है...
-    document.addEventListener("DOMContentLoaded", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const amount = urlParams.get('amt');
-        if(amount) document.getElementById('display-amount').innerText = "₹" + parseFloat(amount).toLocaleString('en-IN') + ".00";
+    document.addEventListener("DOMContentLoaded", () => {
+        const amt = new URLSearchParams(window.location.search).get('amt');
+        if(amt) document.getElementById('display-amount').innerText = "₹" + parseFloat(amt).toLocaleString('en-IN') + ".00";
     });
 
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        alert("Copied successfully!");
-    }
+    function copyText(t) { navigator.clipboard.writeText(t); alert("Copied!"); }
     
-    // सबमिट लॉजिक...
     document.getElementById('payment-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert("Processing your payment...");
-        window.location.href = "deposit.html";
+        
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQMOElevk1tIl6jVkzQ72F5wDyzfGr9jjg_6aEYULgjEqxCa4CqB5L_C9Ej38gxk8Y_Q/exec";
+
+        const utr = document.getElementById('utr-number').value;
+        const amount = document.getElementById('display-amount').innerText;
+
+        alert("Processing...");
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: "submit_proof", 
+                utrNumber: utr, 
+                amount: amount, 
+                time: new Date().toLocaleString() 
+            })
+        })
+        .then(() => {
+            alert("Success! Details submitted.");
+            window.location.href = "deposit.html";
+        })
+        .catch(err => console.error(err));
     });
 </script>
 </body>
