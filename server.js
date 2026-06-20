@@ -29,7 +29,7 @@ const User = mongoose.model('User', userSchema);
 
 // मेन पेज (जो भी तुम्हारी फाइल है) को लोड करने का रास्ता
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'register.html'));
 });
 
 // रजिस्ट्रेशन API
