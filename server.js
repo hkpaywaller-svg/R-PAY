@@ -1,84 +1,53 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
+const mongoose = require('mongoose');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static(__dirname));
 
-const MASTER_ID = "7628950634"; 
-const DB_FILE = path.join(__dirname, 'users.json');
+// MongoDB कनेक्शन लिंक
+const uri = "mongodb+srv://hkpaywaller_db_user:5Xf9YRwUHoMPOHey@cluster0.ucnyait.mongodb.net/Rpay?retryWrites=true&w=majority";
 
-function loadUsers() {
-    if (!fs.existsSync(DB_FILE)) return [];
+mongoose.connect(uri)
+    .then(() => console.log("MongoDB Connected to Rpay!"))
+    .catch(err => console.log(err));
+
+// यूजर का Schema (ढांचा)
+const userSchema = new mongoose.Schema({
+    mobile: String,
+    password: String,
+    role: String,
+    referralCode: String,
+    parentCode: String,
+    id: String
+});
+
+const User = mongoose.model('User', userSchema);
+
+// रजिस्ट्रेशन API
+app.post('/api/register', async (req, res) => {
     try {
-        return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        const { mobile, password, enteredCode } = req.body;
+        
+        // बिना UID के सिर्फ 6 अंकों का रैंडम नंबर
+        const newId = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        const newUser = new User({
+            mobile,
+            password,
+            role: 'member',
+            referralCode: mobile.slice(-5),
+            parentCode: enteredCode,
+            id: newId 
+        });
+        
+        await newUser.save();
+        res.json({ success: true, message: "User registered successfully", user: newUser });
     } catch (err) {
-        return [];
-    }
-}
-
-function saveUsers(users) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(users, null, 2));
-}
-
-function generatePermanentId() { return "UID" + Date.now().toString().slice(-6); }
-function generateUniqueCode() { return Math.floor(10000 + Math.random() * 90000).toString(); }
-
-app.post('/api/register', (req, res) => {
-    const { mobile, password, enteredCode } = req.body;
-    let users = loadUsers();
-    let role = 'member';
-    let referralCode = mobile.slice(-5);
-
-    if (enteredCode === MASTER_ID) {
-        role = 'tl';
-        referralCode = generateUniqueCode();
-    } else {
-        const parent = users.find(u => u.referralCode === enteredCode && u.role === 'tl');
-        if (!parent) return res.json({ success: false, message: "Invalid Code!" });
-    }
-
-    const newUser = { id: generatePermanentId(), mobile, password, role, referralCode, parentCode: enteredCode };
-    users.push(newUser);
-    saveUsers(users);
-    res.json({ success: true, id: newUser.id });
-});
-
-app.get('/api/get-team-data', (req, res) => {
-    const users = loadUsers();
-    const currentUser = users[users.length - 1];
-    if (currentUser && currentUser.role === 'tl') {
-        res.json({ canInvite: true, referralCode: currentUser.referralCode });
-    } else {
-        res.json({ canInvite: false });
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server Error" });
     }
 });
 
-app.get('/api/get-team-members', (req, res) => {
-    const users = loadUsers();
-    const currentUser = users[users.length - 1];
-    if (!currentUser) return res.json([]);
-    
-    if (currentUser.password === MASTER_ID) res.json(users.filter(u => u.role === 'tl'));
-    else if (currentUser.role === 'tl') res.json(users.filter(u => u.parentCode === currentUser.referralCode));
-    else res.json([]);
-});
-
-// यह रहा वो नया हिस्सा जो तेरे 'me.html' को ID देगा
-app.get('/api/get-profile', (req, res) => {
-    const users = loadUsers();
-    const currentUser = users[users.length - 1];
-    if (currentUser) {
-        res.json({ id: currentUser.id });
-    } else {
-        res.json({ id: "Not Found" });
-    }
-});
-
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'register.html')));
-app.get('/team', (req, res) => res.sendFile(path.join(__dirname, 'team.html')));
-app.get('/me', (req, res) => res.sendFile(path.join(__dirname, 'me.html')));
-
-app.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));
+// सर्वर स्टार्ट
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
