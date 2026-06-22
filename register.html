@@ -1,49 +1,27 @@
 <script>
-    // 1. पेज लोड होते ही URL से कोड उठाओ
-    window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const inputField = document.getElementById('referral_input');
-        if (code) {
-            inputField.value = code;
-            inputField.readOnly = true;
+    document.addEventListener('DOMContentLoaded', () => {
+        const regForm = document.getElementById('register-form');
+        if (regForm) {
+            regForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const mobile = document.getElementById('phone').value;
+                const password = document.getElementById('password').value;
+
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("रजिस्ट्रेशन सफल! ID: " + data.id);
+                    window.location.href = "/";
+                } else {
+                    alert("रजिस्ट्रेशन फेल!");
+                }
+            });
+        } else {
+            console.log("Error: form id 'register-form' nahi mila");
         }
-    };
-
-    // 2. नया रजिस्ट्रेशन लॉजिक
-    document.getElementById('register-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const mobile = document.getElementById('phone').value;
-        const password = document.getElementById('password').value;
-        const enteredCode = document.getElementById('referral_input').value;
-
-        // बटन को थोडा डिसेबल कर देते हैं ताकि बार-बार क्लिक न हो
-        const btn = document.querySelector('.submit-btn');
-        btn.innerText = "Registering...";
-        btn.disabled = true;
-
-        fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile, password, enteredCode })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("रजिस्ट्रेशन सफल! आपकी ID: " + data.id);
-                // यहाँ से सीधा लॉग इन पेज पर भेजेगा
-                window.location.href = "login.html";
-            } else {
-                alert(data.message);
-                btn.innerText = "Register Account";
-                btn.disabled = false;
-            }
-        })
-        .catch(err => {
-            alert("सर्वर में दिक्कत आ रही है, फिर से कोशिश करें!");
-            btn.innerText = "Register Account";
-            btn.disabled = false;
-        });
     });
 </script>
