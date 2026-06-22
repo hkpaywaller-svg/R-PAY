@@ -23,9 +23,9 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// मेन पेज (login.html) को लोड करने के लिए
+// मेन पेज (register.html) को लोड करने के लिए
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
+    res.sendFile(path.join(__dirname, 'register.html'));
 });
 
 // रजिस्ट्रेशन API
