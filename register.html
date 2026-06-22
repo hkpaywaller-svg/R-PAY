@@ -1,40 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .form-container { width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <form id="register-form">
-        <input type="text" id="phone" placeholder="Mobile" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <input type="text" id="referral_input" placeholder="Referral Code">
-        <button type="submit">Register Account</button>
-    </form>
+    <div class="form-container">
+        <h2>Register</h2>
+        <form id="register-form">
+            <input type="text" id="phone" placeholder="Phone" required>
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <input type="password" id="confirmPassword" placeholder="Repeat Password" required>
+            <input type="text" id="referral" placeholder="Referral Code">
+            <button type="submit">Register</button>
+        </form>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const regForm = document.getElementById('register-form');
-            if (regForm) {
-                regForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const mobile = document.getElementById('phone').value;
-                    const password = document.getElementById('password').value;
-                    const enteredCode = document.getElementById('referral_input').value;
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mobile = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const enteredCode = document.getElementById('referral').value;
 
-                    const response = await fetch('/api/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mobile, password, enteredCode })
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        alert("रजिस्ट्रेशन सफल! ID: " + data.id);
-                        window.location.href = "/";
-                    } else {
-                        alert(data.message || "रजिस्ट्रेशन फेल!");
-                    }
+            if (password !== confirm) { alert("Passwords do not match!"); return; }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile, password, enteredCode })
                 });
-            }
+                const data = await response.json();
+                if (data.success) {
+                    alert("Registration Successful!");
+                    window.location.href = "/"; // ये लॉगिन पेज पर भेज देगा
+                } else {
+                    alert(data.message || "Error occurred");
+                }
+            } catch (err) { alert("Server error"); }
         });
     </script>
 </body>
