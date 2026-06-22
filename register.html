@@ -1,27 +1,41 @@
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const regForm = document.getElementById('register-form');
-        if (regForm) {
-            regForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const mobile = document.getElementById('phone').value;
-                const password = document.getElementById('password').value;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <form id="register-form">
+        <input type="text" id="phone" placeholder="Mobile" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="text" id="referral_input" placeholder="Referral Code">
+        <button type="submit">Register Account</button>
+    </form>
 
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mobile, password })
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const regForm = document.getElementById('register-form');
+            if (regForm) {
+                regForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const mobile = document.getElementById('phone').value;
+                    const password = document.getElementById('password').value;
+                    const enteredCode = document.getElementById('referral_input').value;
+
+                    const response = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile, password, enteredCode })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert("रजिस्ट्रेशन सफल! ID: " + data.id);
+                        window.location.href = "/";
+                    } else {
+                        alert(data.message || "रजिस्ट्रेशन फेल!");
+                    }
                 });
-                const data = await response.json();
-                if (data.success) {
-                    alert("रजिस्ट्रेशन सफल! ID: " + data.id);
-                    window.location.href = "/";
-                } else {
-                    alert("रजिस्ट्रेशन फेल!");
-                }
-            });
-        } else {
-            console.log("Error: form id 'register-form' nahi mila");
-        }
-    });
-</script>
+            }
+        });
+    </script>
+</body>
+</html>
