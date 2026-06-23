@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <style>
+        body { background: #0A0F1E; color: white; font-family: sans-serif; padding: 20px; }
+        .details-box { background: #151d30; padding: 25px; border-radius: 15px; border: 1px solid #2D3748; }
+        .timer { font-size: 32px; color: #ff416c; font-weight: bold; text-align: center; margin-bottom: 20px; }
+        .info { margin-bottom: 15px; font-size: 15px; background: #0A0F1E; padding: 10px; border-radius: 5px; }
+        .copy-btn { background: #4F46E5; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; float: right; }
+        input { width: 100%; padding: 12px; margin-top: 10px; background: #0A0F1E; border: 1px solid #2D3748; color: white; border-radius: 5px; box-sizing: border-box; }
+        .upload-area { margin-top: 15px; padding: 15px; border: 2px dashed #2D3748; text-align: center; border-radius: 5px; cursor: pointer; }
+        .submit-btn { width: 100%; padding: 15px; background: #238636; border: none; color: white; font-weight: bold; margin-top: 20px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="details-box">
+        <h3 style="text-align: center;">Payment Details</h3>
+        <div class="timer" id="timer">30:00</div>
+        
+        <div class="info">Bank Name: <b>Fino Payments Bank</b></div>
+        <div class="info">Account Holder: <b>Noor bhanu begum</b></div>
+        <div class="info">Account Number: <b>20401036509</b> <button class="copy-btn" onclick="copyText('20401036509')">Copy</button></div>
+        <div class="info">IFSC Code: <b>FINO0009001</b> <button class="copy-btn" onclick="copyText('FINO0009001')">Copy</button></div>
+        
+        <hr style="border: 0.5px solid #2D3748;">
+        
+        <!-- UTR नंबर इनपुट -->
+        <input type="text" placeholder="Enter UTR Number">
+        
+        <!-- स्क्रीनशॉट अपलोड एरिया -->
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            📸 Upload Payment Screenshot
+            <input type="file" id="fileInput" style="display:none;">
+        </div>
+        
+        <button class="submit-btn" onclick="alert('Submitted! Wait for verification.')">SUBMIT ORDER</button>
+    </div>
+
+    <script>
+        let time = 1800;
+        const timerElement = document.getElementById('timer');
+        setInterval(() => {
+            let m = Math.floor(time / 60);
+            let s = time % 60;
+            timerElement.innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            if(time > 0) time--;
+        }, 1000);
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert("Copied: " + text);
+        }
+    </script>
+</body>
+</html>

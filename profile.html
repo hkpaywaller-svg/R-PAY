@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <style>
+        body { background: #f0f2f5; font-family: sans-serif; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo-box { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; }
+        .balance-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .menu-item { background: white; padding: 18px; margin-top: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; color: #333; font-weight: 600; cursor: pointer; }
+        .contact-links { display: flex; gap: 15px; margin-top: 10px; display: none; padding: 10px; background: #fff; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="13901.png" alt="Logo" class="logo-box">
+            <h2>Profile</h2>
+        </div>
+        <div>
+            <b>ID: <span id="userId">RN998877</span></b>
+            <button onclick="copyId()" style="cursor:pointer;">Copy</button>
+        </div>
+    </div>
+
+    <div class="balance-card">
+        <p style="color: #666; margin: 0;">Available Balance</p>
+        <h1 style="margin: 5px 0;">₹ 1,00,000.00</h1>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="menu-item" onclick="location.href='deposit.html'">🔝 Top Up</div>
+    <div class="menu-item" onclick="location.href='recharge-history.html'">💳 Recharge History <span>></span></div>
+    <div class="menu-item" onclick="location.href='token-history.html'">🔄 Token History <span>></span></div>
+    <div class="menu-item" onclick="location.href='bank.html'">🔗 Link Bank Account <span>></span></div>
+    
+    <!-- Contact Us with Social Links -->
+    <div class="menu-item" onclick="toggleContact()">📞 Contact us <span>></span></div>
+    <div id="contactLinks" class="contact-links">
+        <a href="https://t.me/RNpayofficialchannel" target="_blank">Telegram</a>
+        <a href="https://chat.whatsapp.com/JhHrlMjHZDOG7ey0KXq0sC?s=cl&p=a&ilr=4" target="_blank">WhatsApp</a>
+    </div>
+
+    <div class="menu-item" onclick="location.href='team.html'">👥 My Team <span>></span></div>
+    <div class="menu-item" style="color: #d32f2f;" onclick="alert('Signed Out')">➡️ Sign Out <span>></span></div>
+
+    <script>
+        function copyId() {
+            const id = document.getElementById('userId').innerText;
+            navigator.clipboard.writeText(id);
+            alert("ID Copied: " + id);
+        }
+        function toggleContact() {
+            const links = document.getElementById('contactLinks');
+            links.style.display = (links.style.display === 'flex') ? 'none' : 'flex';
+        }
+    </script>
+</body>
+</html>

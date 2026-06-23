@@ -1,53 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Register - SwiftPay</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .form-container { width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        body { margin: 0; background-color: #0A0F1E; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { width: 90%; max-width: 400px; background: #151d30; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); text-align: center; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #4F46E5; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #2D3748; background: #0A0F1E; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; margin-top: 20px; background: #4F46E5; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+        a { color: #4F46E5; text-decoration: none; display: block; margin-top: 15px; }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Register</h2>
-        <form id="register-form">
-            <input type="text" id="phone" placeholder="Phone" required>
-            <input type="password" id="password" placeholder="Enter Password" required>
-            <input type="password" id="confirmPassword" placeholder="Repeat Password" required>
-            <input type="text" id="referral" placeholder="Referral Code">
-            <button type="submit">Register</button>
-        </form>
+    <div class="container">
+        <div class="logo">RN PAY</div>
+        <h3>Create Your Account</h3>
+        <input type="text" placeholder="Mobile Number">
+        <input type="password" placeholder="Create Password">
+        <input type="password" placeholder="Confirm Password">
+        <input type="text" placeholder="Referral Code (Optional)">
+        
+        <button onclick="window.location.href='login.html'">Register Now</button>
+        <a href="login.html">Already have an account? Login</a>
     </div>
-
-    <script>
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const mobile = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const confirm = document.getElementById('confirmPassword').value;
-            const enteredCode = document.getElementById('referral').value;
-
-            if (password !== confirm) { alert("Passwords do not match!"); return; }
-
-            try {
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mobile, password, enteredCode })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    alert("Registration Successful!");
-                    window.location.href = "/"; // ये लॉगिन पेज पर भेज देगा
-                } else {
-                    alert(data.message || "Error occurred");
-                }
-            } catch (err) { alert("Server error"); }
-        });
-    </script>
 </body>
 </html>

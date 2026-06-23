@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Bank Account</title>
+    <!-- सर्च फ़िल्टर के लिए स्टाइल -->
+    <style>
+        body { background: #0A0F1E; color: white; font-family: sans-serif; padding: 20px; }
+        .form-box { background: #151d30; padding: 25px; border-radius: 15px; border: 1px solid #2D3748; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; background: #0A0F1E; border: 1px solid #2D3748; color: white; border-radius: 5px; }
+        .save-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #4F46E5, #7c3aed); border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="form-box">
+    <h3>Add Bank Account</h3>
+    
+    <label>Account Holder Name</label>
+    <input type="text" placeholder="Enter Full Name">
+
+    <label>Search & Select Bank</label>
+    <input type="text" id="bankSearch" placeholder="Type bank name to search..." onkeyup="filterBanks()">
+    <select id="bankList" size="5" style="display:none; height: 150px;">
+        <!-- यहाँ पूरी लिस्ट आएगी -->
+    </select>
+
+    <label>Account Number</label>
+    <input type="text" placeholder="Enter Account Number">
+
+    <label>IFSC Code</label>
+    <input type="text" placeholder="Enter IFSC Code">
+
+    <button class="save-btn" onclick="alert('Bank Saved!')">SAVE ACCOUNT</button>
+</div>
+
+<script>
+    const banks = [
+        "State Bank of India", "HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", 
+        "Fino Payments Bank", "Paytm Payments Bank", "Punjab National Bank", "Bank of Baroda", 
+        "Canara Bank", "Union Bank of India", "IDFC First Bank", "Yes Bank", "IndusInd Bank", 
+        "Federal Bank", "Indian Bank", "Central Bank of India", "Bank of India", "UCO Bank", 
+        "J&K Bank", "South Indian Bank", "DBS Bank", "Standard Chartered Bank", "Other"
+        // आप यहाँ जितने चाहे बैंक के नाम जोड़ सकते हैं
+    ];
+
+    const list = document.getElementById('bankList');
+    const search = document.getElementById('bankSearch');
+
+    // लिस्ट को भरना
+    function loadBanks() {
+        list.innerHTML = "";
+        banks.forEach(b => {
+            let opt = document.createElement('option');
+            opt.text = b;
+            list.add(opt);
+        });
+    }
+
+    // सर्च फ़िल्टर लॉजिक
+    search.onfocus = () => list.style.display = 'block';
+    function filterBanks() {
+        let filter = search.value.toUpperCase();
+        let options = list.getElementsByTagName('option');
+        for (let i = 0; i < options.length; i++) {
+            options[i].style.display = options[i].text.toUpperCase().includes(filter) ? "" : "none";
+        }
+    }
+
+    loadBanks();
+</script>
+</body>
+</html>

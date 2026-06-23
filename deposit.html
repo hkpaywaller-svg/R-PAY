@@ -1,256 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Market - TataPay</title>
+    <title>Task Center</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
-        body { background-color: #fafafa; display: flex; justify-content: center; color: #000; }
-        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; padding: 16px; padding-bottom: 80px; position: relative; }
-        
-        /* टॉप टैब (INR / USDT) */
-        .tab-header { display: flex; gap: 24px; font-size: 16px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f1f3f5; color: #868e96; }
-        .tab-item { cursor: pointer; padding-bottom: 10px; margin-bottom: -11px; }
-        .tab-item.active { color: #000; border-bottom: 2px solid #000; }
-
-        /* --- INR सेक्शन की स्टाइल --- */
-        .task-banner { background: #f1f0fe; color: #000; border-radius: 8px; padding: 12px; margin-bottom: 15px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .coin-icon { font-size: 16px; }
-        .how-buy { font-size: 13px; font-weight: bold; color: #000; display: flex; align-items: center; gap: 6px; margin-bottom: 15px; cursor: pointer; }
-        .filter-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
-        .sort-select { background: #f1f3f5; border: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; color: #000; outline: none; }
-        .range-input { width: 60px; background: #f1f3f5; border: none; padding: 8px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: bold; outline: none; }
-        .refresh-btn { background: #000; color: #fff; border: none; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        
-        .orders-list { display: flex; flex-direction: column; gap: 18px; max-height: 65vh; overflow-y: auto; padding-right: 2px; }
-        .orders-list::-webkit-scrollbar { width: 3px; }
-        .orders-list::-webkit-scrollbar-thumb { background: #eee; }
-        .order-card { display: flex; justify-content: space-between; align-items: center; background: #fff; padding-bottom: 12px; border-bottom: 1px solid #f8f9fa; }
-        .order-left { display: flex; flex-direction: column; gap: 2px; }
-        .main-amt { font-size: 18px; font-weight: 900; color: #000; }
-        .meta-row { display: flex; gap: 20px; font-size: 12px; color: #868e96; font-weight: 500; margin-top: 2px; }
-        .meta-val.income { color: #000; font-weight: bold; }
-        .meta-val.quota { color: #00b894; font-weight: bold; }
-        .buy-btn { background: #000; color: #fff; border: none; padding: 8px 24px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-
-        /* --- USDT सेक्शन की स्टाइल --- */
-        .usdt-container { display: none; flex-direction: column; align-items: center; text-align: left; width: 100%; }
-        .qr-box { width: 180px; height: 180px; margin: 10px 0 25px 0; border: 1px solid #eee; padding: 10px; border-radius: 8px; display: flex; justify-content: center; align-items: center; position: relative; }
-        .qr-box img { width: 100%; height: 100%; }
-        .usdt-logo { position: absolute; width: 30px !important; height: 30px !important; background: #fff; border-radius: 50%; padding: 2px; }
-        .address-card { border: 1px solid #e9ecef; border-radius: 8px; padding: 14px; width: 100%; background: #fff; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .address-text { font-size: 13px; font-weight: bold; color: #000; word-break: break-all; width: 80%; line-height: 1.4; }
-        .copy-btn { background: #f1f3f5; border: none; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .fee-warning { border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; width: 100%; background: #fff; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .warning-icon { background: #555; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-        .calc-row { display: flex; justify-content: space-between; width: 100%; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-        .calc-input { width: 100%; padding: 14px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; font-weight: bold; outline: none; margin-bottom: 15px; }
-        .info-text-line { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; width: 100%; }
-        .notice-text { font-size: 12px; color: #555; font-weight: 500; margin-top: 15px; width: 100%; line-height: 1.5; margin-bottom: 20px; }
-        
-        /* एक्सचेंज बटन */
-        .exchange-btn { width: 100%; background: #000; color: #fff; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; }
-        .exchange-btn:active { opacity: 0.8; }
-
-        /* बॉटम नेविगेशन बार */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); z-index: 10; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #868e96; text-decoration: none; font-weight: 500; }
-        .nav-item.active { color: #000; font-weight: bold; }
-        .nav-icon { font-size: 20px; }
+        body { background-color: #0A0F1E; color: white; font-family: sans-serif; margin: 0; padding-bottom: 80px; }
+        .tabs { display: flex; gap: 20px; padding: 20px; font-weight: bold; background: #151d30; }
+        .tab-btn { cursor: pointer; padding-bottom: 5px; border-bottom: 2px solid transparent; }
+        .active-tab { border-bottom: 2px solid #ff416c; color: #ff416c; }
+        .task-card { background: #151d30; margin: 10px; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2D3748; }
+        .buy-btn { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: #0A0F1E; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #2D3748; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="tab-header">
-        <span class="tab-item active" onclick="switchCurrency('INR')">INR</span>
-        <span class="tab-item" onclick="switchCurrency('USDT')">USDT</span>
+    <!-- Tabs: INR और USDT -->
+    <div class="tabs">
+        <div class="tab-btn active-tab" onclick="showSection('INR')">INR</div>
+        <div class="tab-btn" onclick="showSection('USDT')">USDT</div>
     </div>
 
-    <div id="inr-view">
-        <div class="task-banner">
-            <span class="coin-icon">🪙</span>
-            <span>Complete a task to earn Commission and Bonus</span>
-        </div>
-
-        <div class="how-buy">
-            <span>▶ How Buy Quota?</span>
-        </div>
-
-        <div class="filter-bar">
-            <select class="sort-select" id="sort-type" onchange="filterAndSortTasks()"><option value="low">From low to high</option><option value="high">From high to low</option></select>
-            <input type="number" class="range-input" id="min-price" placeholder="Min">
-            <span>-</span>
-            <input type="number" class="range-input" id="max-price" placeholder="Max">
-            <button class="refresh-btn" onclick="filterAndSortTasks()">Refresh</button>
-        </div>
-
-        <div class="orders-list" id="orders-container"></div>
+    <!-- INR सेक्शन -->
+    <div id="INR-section">
+        <div id="taskList"></div>
     </div>
 
-    <div id="usdt-view" class="usdt-container">
-        <div class="qr-box">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TDBuftovrajbsdMhXWEhuoPATqAHDcthbx" alt="QR Code">
-            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="usdt-logo" alt="USDT">
+    <!-- USDT सेक्शन (जो आपने 11220.jpg में दिखाया था) -->
+    <div id="USDT-section" style="display:none; padding: 20px;">
+        <div style="text-align: center; background: #151d30; padding: 20px; border-radius: 15px;">
+            <p>QR Code Placeholder</p>
+            <div class="info">Wallet Address (TRC-20): <br><b>TDBuftovrajbsdMhXWEhuoPATqAHDcthbx</b></div>
         </div>
-
-        <div class="address-card">
-            <div class="address-text" id="wallet-addr">Wallet Address (TRC-20)<br>TDBuftovrajbsdMhXWEhuoPATqAHDcthbx</div>
-            <button class="copy-btn" onclick="copyAddress()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-        </div>
-
-        <div class="fee-warning">
-            <span class="warning-icon">!</span>
-            <span>You pay network fee.</span>
-        </div>
-
-        <div class="calc-row">
-            <span>Calculator</span>
-            <span>Ratio: 1 USDT = 104 INR</span>
-        </div>
-        <input type="number" class="calc-input" id="usdt-calc" placeholder="0" oninput="calculateInr(this.value)">
-
-        <div class="info-text-line" id="bonus-txt">Estimated bonus: 0(2%) INR</div>
-        <div class="info-text-line" id="total-txt">Total: 0 INR</div>
-
-        <div class="notice-text">
-            * After the recharge is completed, please wait 3-5 minutes for the deposit to arrive.
-        </div>
-
-        <button class="exchange-btn" onclick="handleExchange()">Exchange to Wallet</button>
     </div>
 
-    <div class="bottom-nav">
-        <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
-        <a href="deposit.html" class="nav-item active"><span class="nav-icon">🔄</span>Deposit</a>
-        <a href="upi.html" class="nav-item"><span class="nav-icon">💼</span>UPI</a>
-        <a href="team.html" class="nav-item"><span class="nav-icon">📊</span>Team</a>
-        <a href="me.html" class="nav-item"><span class="nav-icon">👤</span>Me</a>
+    <!-- Navigation -->
+    <div class="nav">
+        <div onclick="location.href='dashboard.html'">🏠<br>Home</div>
+        <div onclick="location.href='deposit.html'">💸<br>Deposit</div>
+        <div onclick="location.href='upi.html'">🏦<br>Bank</div>
+        <div onclick="location.href='team.html'">📊<br>Team</div>
+        <div onclick="location.href='profile.html'">🎯<br>Profile</div>
     </div>
-</div>
 
-<script>
-    // ग्लोबल ऐरे ताकि फिल्टरिंग फ़ास्ट हो सके भाई
-    let allOrders = [];
-
-    // 200 से 50000 के बीच 500 ऑर्डर जनरेट करने का तुम्हारा परफेक्ट गणित
-    function generateInrTasks() {
-        allOrders = [];
-        let startAmt = 200;
-        let endAmt = 50000;
-        let stepGap = (endAmt - startAmt) / 499; 
-
-        for (let i = 0; i < 500; i++) {
-            let amt = Math.round(startAmt + (stepGap * i));
-            let commission = (amt * 0.04).toFixed(2); // 4% कमीशन
-            let quota = (amt + parseFloat(commission)).toFixed(2);
-            
-            // यहाँ आटोमैटिक P2P के लिए सेलर असाइन करने का लॉजिक (शुरुआत में तुम 'MAIN_ADMIN' हो)
-            let sellerId = "MAIN_ADMIN"; 
-
-            allOrders.push({
-                amount: amt,
-                commission: commission,
-                quota: quota,
-                seller: sellerId
-            });
-        }
-        renderOrders(allOrders);
-    }
-
-    // स्क्रीन पर ऑर्डर्स दिखाने का फंक्शन
-    function renderOrders(ordersArray) {
-        const container = document.getElementById("orders-container");
-        container.innerHTML = ""; 
-
-        if(ordersArray.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#868e96; font-size:14px; margin-top:20px;">No orders found in this range भाई!</div>`;
-            return;
+    <script>
+        // Tab switching function
+        function showSection(type) {
+            document.getElementById('INR-section').style.display = (type === 'INR') ? 'block' : 'none';
+            document.getElementById('USDT-section').style.display = (type === 'USDT') ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active-tab', t.innerText === type));
         }
 
-        ordersArray.forEach(order => {
-            const orderCard = document.createElement("div");
-            orderCard.className = "order-card";
-            orderCard.innerHTML = `
-                <div class="order-left">
-                    <span class="main-amt">${order.amount} INR</span>
-                    <div class="meta-row">
-                        <div class="info-block">Income <span class="meta-val income">${order.commission} (4%)</span></div>
-                        <div class="info-block">Quota <span class="meta-val quota">+${order.quota}</span></div>
-                    </div>
+        // 1000 से 1 लाख तक के टास्क जनरेट करने वाला लूप
+        const taskList = document.getElementById('taskList');
+        for (let i = 1; i <= 100; i++) { // Demo ke liye 100 tak rakha hai
+            let amount = i * 1000;
+            if (amount > 100000) break;
+            taskList.innerHTML += `
+                <div class="task-card">
+                    <div><b>₹ ${amount} INR</b></div>
+                    <button class="buy-btn" onclick="location.href='order-details.html'">BUY</button>
                 </div>
-                <button class="buy-btn" onclick="goToPayment(${order.amount}, '${order.seller}')">Buy</button>
             `;
-            container.appendChild(orderCard);
-        });
-    }
-
-    // सर्च, रेंज फिल्टर और सॉर्टिंग फंक्शनलिटी भाई
-    function filterAndSortTasks() {
-        let min = parseFloat(document.getElementById("min-price").value) || 0;
-        let max = parseFloat(document.getElementById("max-price").value) || Infinity;
-        let sortType = document.getElementById("sort-type").value;
-
-        // रेंज के हिसाब से फिल्टर
-        let filtered = allOrders.filter(item => item.amount >= min && item.amount <= max);
-
-        // सॉर्टिंग (लो-टू-हाई या हाई-टू-लो)
-        if(sortType === "low") {
-            filtered.sort((a, b) => a.amount - b.amount);
-        } else {
-            filtered.sort((a, b) => b.amount - a.amount);
         }
-
-        renderOrders(filtered);
-    }
-
-    function switchCurrency(type) {
-        document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
-        if (type === 'INR') {
-            document.querySelectorAll('.tab-item')[0].classList.add('active');
-            document.getElementById('inr-view').style.display = 'block';
-            document.getElementById('usdt-view').style.display = 'none';
-        } else {
-            document.querySelectorAll('.tab-item')[1].classList.add('active');
-            document.getElementById('inr-view').style.display = 'none';
-            document.getElementById('usdt-view').style.display = 'flex';
-        }
-    }
-
-    function calculateInr(usdtVal) {
-        const value = parseFloat(usdtVal) || 0;
-        const baseInr = value * 104;
-        const bonus = baseInr * 0.02;
-        const total = baseInr + bonus;
-        document.getElementById('bonus-txt').innerText = `Estimated bonus: ${bonus.toFixed(2)}(2%) INR`;
-        document.getElementById('total-txt').innerText = `Total: ${total.toFixed(2)} INR`;
-    }
-
-    function copyAddress() {
-        navigator.clipboard.writeText("TDBuftovrajbsdMhXWEhuoPATqAHDcthbx");
-        alert("Wallet address copied!");
-    }
-
-    // 🚀 अब यह फंक्शन अमाउंट के साथ सेलर की डिटेल्स भी आगे पेमेंट पेज को ट्रांसफर करेगा
-    function goToPayment(amount, sellerId) {
-        window.location.href = `p2p_pay_details.html?amt=${amount}&seller=${sellerId}`;
-    }
-
-    function handleExchange() {
-        const usdtAmount = document.getElementById('usdt-calc').value;
-        if(!usdtAmount || usdtAmount <= 0) {
-            alert("Please enter a valid USDT amount first!");
-            return;
-        }
-        alert(`Your request to exchange ${usdtAmount} USDT has been submitted! Please wait for approval.`);
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        generateInrTasks();
-    });
-</script>
+    </script>
 </body>
 </html>

@@ -1,83 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team - R Pay</title>
+    <title>Team Section</title>
     <style>
-        body { font-family: sans-serif; background-color: #f7f9fc; margin: 0; padding: 0; padding-bottom: 80px; }
-        .app-container { max-width: 450px; margin: 0 auto; background-color: #fff; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        h2 { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #000; }
-        .stats-card { background-color: #404040; color: #fff; border-radius: 12px; padding: 25px 20px; margin-bottom: 25px; }
-        .stats-grid { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .stat-value { font-size: 24px; font-weight: bold; }
-        .stat-label { font-size: 13px; color: #ccc; margin-top: 5px; }
-        .member-count { font-size: 16px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
-        .invite-box { background-color: #f8f9fa; border: 1px solid #f1f3f5; border-radius: 12px; padding: 15px; display: none; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .invite-link { font-size: 13px; font-weight: bold; color: #000; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 80%; }
-        .copy-btn { background: none; border: none; cursor: pointer; font-size: 18px; }
-        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f8f9fa; }
-        .member-left { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 44px; height: 44px; border-radius: 50%; background: #004d4d; }
-        .member-info { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: bold; }
-        .recharge-text { font-size: 12px; color: #999; font-weight: 500; }
-        .member-right { text-align: right; font-size: 13px; color: #999; font-weight: bold; }
+        body { background: #0A0F1E; color: white; font-family: sans-serif; padding: 15px; }
+        .stats-card { background: #151d30; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; border: 1px solid #2D3748; margin-bottom: 20px; }
+        .invite-box { background: #151d30; padding: 15px; border-radius: 10px; border: 1px solid #2D3748; margin-bottom: 20px; }
+        .member-list { background: #151d30; padding: 15px; border-radius: 10px; border: 1px solid #2D3748; }
+        .member-item { border-bottom: 1px solid #2D3748; padding: 10px 0; display: flex; justify-content: space-between; }
+        button { background: #4F46E5; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <h2>Team</h2>
+
+    <!-- Stats Section -->
     <div class="stats-card">
-        <div class="stats-grid">
-            <div><div class="stat-value">0.00</div><div class="stat-label">Commission</div></div>
-            <div><div class="stat-value">0.00</div><div class="stat-label">Team Recharge</div></div>
+        <div><small>Commission</small><br><b>2811.68</b></div>
+        <div><small>Team Recharge</small><br><b>1579047.85</b></div>
+    </div>
+
+    <!-- Referral Link Section -->
+    <div class="invite-box">
+        <label>Invite Code</label>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+            <input type="text" id="myLink" value="...b.tatapay-web.com/regist?code=0dashowpay8j" readonly style="width: 70%; background: #0A0F1E; border: 1px solid #2D3748; color: white; padding: 5px;">
+            <button onclick="copyLink()">Copy</button>
         </div>
-        <div class="member-count" id="memberCount">👤 0</div>
     </div>
-    <h3 id="inviteHeader">Invite Code</h3>
-    <div class="invite-box" id="inviteBox">
-        <span class="invite-link" id="inviteLink">...</span>
-        <button class="copy-btn" onclick="copyLink()">📋</button>
+
+    <!-- Team Details Section -->
+    <div class="member-list">
+        <h3>Team Detail</h3>
+        <div class="member-item">
+            <span>Phone: 705****7069</span>
+            <span>Comm: 0</span>
+        </div>
+        <div class="member-item">
+            <span>Phone: 986****1214</span>
+            <span>Comm: 0</span>
+        </div>
+        <div class="member-item">
+            <span>Phone: 986****3447</span>
+            <span>Comm: 29.68</span>
+        </div>
     </div>
-    <h3>Team Detail</h3>
-    <div id="teamList"></div>
-</div>
-<script>
-    // इनवाइट कोड लोड करने के लिए
-    fetch('/api/get-team-data')
-    .then(res => res.json())
-    .then(data => {
-        if (data.canInvite) {
-            document.getElementById('inviteBox').style.display = 'flex';
-            document.getElementById('inviteLink').innerText = window.location.origin + "/register.html?code=" + data.referralCode;
+
+    <script>
+        function copyLink() {
+            const link = document.getElementById('myLink');
+            link.select();
+            document.execCommand('copy');
+            alert("Link Copied!");
         }
-    });
-
-    // टीम मेंबर्स और उनकी ID लोड करने के लिए
-    fetch('/api/get-team-members')
-    .then(res => res.json())
-    .then(members => {
-        const teamList = document.getElementById('teamList');
-        document.getElementById('memberCount').innerText = "👤 " + members.length;
-        
-        teamList.innerHTML = members.map(m => `
-            <div class="member-item">
-                <div class="member-left">
-                    <div class="avatar"></div>
-                    <div class="member-info">
-                        Phone: ${m.mobile}
-                        <br><span class="recharge-text">ID: ${m.id}</span>
-                    </div>
-                </div>
-                <div class="member-right">Joined<br>Comm: 0 ❯</div>
-            </div>
-        `).join('');
-    });
-
-    function copyLink() {
-        navigator.clipboard.writeText(document.getElementById('inviteLink').innerText)
-        .then(() => alert('Link Copied!'));
-    }
-</script>
+    </script>
 </body>
 </html>
